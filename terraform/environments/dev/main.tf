@@ -39,18 +39,6 @@ module "gcs_functions" {
   storage_class = "STANDARD"
 }
 
-data "archive_file" "functions_zip" {
-  type        = "zip"
-  source_dir  = "../../functions/simulate_events_function"
-  output_path = "/tmp/simulate_events_function.zip"
-}
-
-resource "google_storage_bucket_object" "simulate_function_source" {
-  name   = "function-simulate-${data.archive_file.functions_zip.output_md5}.zip"
-  bucket = module.gcs_functions.bucket.name
-  source = data.archive_file.functions_zip.output_path
-}
-
 resource "google_service_account" "cloud_run_job_service_account" {
   account_id   = "${var.project_id}-function-sa"
   display_name = "Service Account for Cloud Functions"
