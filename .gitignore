@@ -161,3 +161,6 @@ Desktop.ini
 
 # MacOS
 .DS_Store
+
+# Draw.io
+*.bkp
