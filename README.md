@@ -2,9 +2,10 @@
 
 This project is meant to show you my skills on GCP + DBT
 
-> DISCLAIMER 1: this project is in work in progress
+> DISCLAIMER 1: this project is in work in progress 🏗️
+
 > DISCLAIMER 2: 
-> - This is NOT Vibe Coding at all !! A good developer keeps control of the code always of course IA was used and should be used to ease productivity but not to just code instead of the developer
+> - This is NOT Vibe Coding at all !! A good developer keeps control of the code always of course IA was used and should be used t🏗️o ease productivity but not to just code instead of the developer
 > - This is handwritting code by myself that I can explain 100%
 
 ## Architecture
