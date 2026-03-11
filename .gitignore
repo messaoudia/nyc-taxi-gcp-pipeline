@@ -53,6 +53,8 @@ share/python-wheels/
 
 # Environnements virtuels
 .env
+.env.*
+!.env.example
 .venv
 env/
 venv/
@@ -122,9 +124,6 @@ dbt/profiles.yml          # credentials BQ — jamais commiter
 # SECRETS & CONFIG LOCAUX
 # =========================
 
-.env
-.env.*
-!.env.example
 *.pem
 *.key
 *credentials*
@@ -150,17 +149,6 @@ gcp-key*.json
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Linux
-*~
-
-# MacOS
-.DS_Store
 
 # Draw.io
 *.bkp
