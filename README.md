@@ -9,6 +9,7 @@ This project is meant to show you my skills on GCP + DBT
 > - This is handwritting code by myself that I can explain 100%
 
 ## Architecture
+![Architecture Diagram](docs/infrastructure.drawio.png)
 
 ## Want to try the project ?
 1. Download GCP cli + auth login
