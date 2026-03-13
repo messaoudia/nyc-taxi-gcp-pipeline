@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import requests
-from google.cloud import pubsub_v1, storage, parametermanager_v1, secretmanager_v1
+from google.cloud import pubsub_v1, storage, parametermanager_v1
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,15 +30,20 @@ def run():
     nyc_data_secret = os.getenv("NYC_DATA_SECRET")
     environment = os.getenv("ENVIRONMENT")
 
-    storage_client = storage.Client()
-    secret_manager_client = secretmanager_v1.SecretManagerServiceClient()
-
-    secret_version = secret_manager_client.access_secret_version(
-        request=secretmanager_v1.AccessSecretVersionRequest(name=nyc_data_secret)
+    logger.info(
+        f"""
+        Starting Cloud Run Job with the following environment variables:
+        CLOUD_RUN_TASK_INDEX: {cloud_run_task_index}
+        GOOGLE_CLOUD_PROJECT: {project_id}
+        BUCKET_NAME: {bucket_name}
+        TOPIC_NAME: {topic_name}
+        ENVIRONMENT: {environment}
+        """
     )
 
-    secret_version_payload = secret_version.payload.data.decode("UTF-8")
-    nyc_data_uri = json.loads(secret_version_payload).get("nyc_data_uri")
+    storage_client = storage.Client()
+
+    nyc_data_uri = json.loads(nyc_data_secret).get("nyc_data_uri")
 
     parameter_manager_client = parametermanager_v1.ParameterManagerClient()
     parameter_name = f"projects/{project_id}/locations/global/parameters/nyc-taxi-gcp-pipeline-{environment}-parameter/versions/latest"
