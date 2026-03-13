@@ -64,6 +64,18 @@ resource "google_secret_manager_secret_iam_member" "cloud_run_job_secret_access"
   ]
 }
 
+resource "google_service_account_iam_member" "impersonation" {
+  for_each = toset(var.impersonation_users)
+
+  service_account_id = google_service_account.cloud_run_job_service_account.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "user:${each.value}"
+
+  depends_on = [
+    google_service_account.cloud_run_job_service_account,
+  ]
+}
+
 resource "google_service_account_iam_member" "cloud_run_job_user" {
   service_account_id = google_service_account.cloud_run_job_service_account.name
   role               = "roles/iam.serviceAccountUser"
