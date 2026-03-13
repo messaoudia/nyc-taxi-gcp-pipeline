@@ -33,3 +33,13 @@ variable "topic_name" {
     description = "Pub/Sub topic name for raw trip data"
     type        = string
 }
+
+variable "nyc_data_uri" {
+    description = "URI for NYC taxi trip data"
+    type        = string
+}
+
+variable "impersonation_users" {
+    description = "List of users that can impersonate the Cloud Run service account"
+    type        = list(string)
+}
