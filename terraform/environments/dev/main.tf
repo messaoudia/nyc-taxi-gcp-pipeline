@@ -44,9 +44,19 @@ resource "google_service_account" "cloud_run_job_service_account" {
   display_name = "Service Account for Cloud Functions"
 }
 
-resource "google_storage_bucket_iam_member" "cloud_run_job_bucket_access" {
+resource "google_storage_bucket_iam_member" "cloud_run_job_bucket_access_creator" {
   bucket = module.gcs_data.bucket.name
   role   = "roles/storage.objectCreator"
+  member = "serviceAccount:${google_service_account.cloud_run_job_service_account.email}"
+  depends_on = [
+    module.gcs_data,
+    google_service_account.cloud_run_job_service_account,
+  ]
+}
+
+resource "google_storage_bucket_iam_member" "cloud_run_job_bucket_access_viewer" {
+  bucket = module.gcs_data.bucket.name
+  role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.cloud_run_job_service_account.email}"
   depends_on = [
     module.gcs_data,
@@ -63,6 +73,18 @@ resource "google_secret_manager_secret_iam_member" "cloud_run_job_secret_access"
     google_service_account.cloud_run_job_service_account,
   ]
 }
+
+resource "google_project_iam_member" "cloud_run_job_parameter_access" {
+  project = var.project_id
+  role    = "roles/parametermanager.parameterAccessor"
+  member  = "serviceAccount:${google_service_account.cloud_run_job_service_account.email}"
+
+  depends_on = [
+    google_parameter_manager_parameter.default,
+    google_service_account.cloud_run_job_service_account,
+  ]
+}
+
 
 resource "google_service_account_iam_member" "impersonation" {
   for_each = toset(var.impersonation_users)
@@ -149,6 +171,7 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
   deletion_protection = false # set to "true" in production check https://docs.cloud.google.com/run/docs/create-jobs?hl=fr#terraform
 
   template {
+    task_count = 4
     template {
         service_account = google_service_account.cloud_run_job_service_account.email
         containers {
@@ -183,7 +206,8 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
   }
 
   depends_on = [
-    google_storage_bucket_iam_member.cloud_run_job_bucket_access,
+    google_storage_bucket_iam_member.cloud_run_job_bucket_access_creator,
+    google_storage_bucket_iam_member.cloud_run_job_bucket_access_viewer,
     google_service_account_iam_member.cloud_run_job_user,
     google_secret_manager_secret_version.secrets_version,
     google_parameter_manager_parameter_version.default,
