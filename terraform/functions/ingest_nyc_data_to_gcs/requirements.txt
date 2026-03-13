@@ -1,4 +1,4 @@
+requests
 google-cloud-storage
 google-cloud-pubsub
-google-cloud-secret-manager
 google-cloud-parametermanager
