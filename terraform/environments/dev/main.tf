@@ -32,6 +32,13 @@ module "gcs_data" {
   ]
 }
 
+resource "google_storage_bucket_object" "default" {
+ name         = "taxi_zone_lookup.csv"
+ source       = "${path.module}../../data/taxi_zone_lookup.csv"
+ content_type = "text/csv"
+ bucket       = module.gcs_data.bucket.name
+}
+
 module "gcs_functions" {
   source     = "../../modules/gcs"
   bucket_name = "${var.project_id}-${var.environment}-functions"
@@ -216,3 +223,34 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
 
 }
 
+resource "google_bigquery_dataset" "raw_dataset" {
+  dataset_id = "nyc_taxi_raw_${var.environment}"
+  location   = var.location
+}
+
+resource "google_bigquery_table" "raw_yellow_tripdata_table" {
+  dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
+  table_id   = "yellow_tripdata"
+  schema     = file("${path.module}/schemas/raw_yellow_tripdata.json")
+
+  time_partitioning {
+    type = "DAY"
+    field = "tpep_pickup_datetime"
+  }
+
+  clustering = ["PULocationID", "DOLocationID"]
+
+  depends_on = [
+    google_bigquery_dataset.dataset,
+  ]
+}
+
+resource "google_bigquery_table" "taxi_zone_lookup_table" {
+  dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
+  table_id   = "taxi_zone_lookup"
+  schema     = file("${path.module}/schemas/taxi_zone_lookup.json")
+
+  depends_on = [
+    google_bigquery_dataset.dataset,
+  ]
+}
