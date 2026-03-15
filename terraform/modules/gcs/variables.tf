@@ -32,3 +32,9 @@ variable "lifecycle_rules" {
   }))
   default = []
 }
+
+variable "force_destroy" {
+  description = "Whether to force destroy the bucket (including all objects) to be used with caution"
+  type        = bool
+  default     = false
+}

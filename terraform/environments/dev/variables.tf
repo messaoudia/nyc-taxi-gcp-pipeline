@@ -3,6 +3,11 @@ variable "project_id" {
     type        = string
 }
 
+variable "app_name" {
+    description = "Application name for resource naming"
+    type        = string
+}
+
 variable "location" {
     description = "GCP location name"
     type        = string

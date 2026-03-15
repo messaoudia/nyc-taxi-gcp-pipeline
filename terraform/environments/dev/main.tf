@@ -16,7 +16,7 @@ provider "google" {
 
 module "gcs_data" {
   source     = "../../modules/gcs"
-  bucket_name = "${var.project_id}-${var.environment}-${var.bucket_name}"
+  bucket_name = "${var.app_name}-${var.bucket_name}-${var.environment}"
   location    = var.location
   storage_class = "STANDARD"
   versioning = false
@@ -30,24 +30,26 @@ module "gcs_data" {
       }
     }
   ]
+  force_destroy = true # set to "false" in production
 }
 
 resource "google_storage_bucket_object" "default" {
  name         = "taxi_zone_lookup.csv"
- source       = "${path.module}../../data/taxi_zone_lookup.csv"
+ source       = "${path.module}/../../data/taxi_zone_lookup.csv"
  content_type = "text/csv"
  bucket       = module.gcs_data.bucket.name
 }
 
 module "gcs_functions" {
   source     = "../../modules/gcs"
-  bucket_name = "${var.project_id}-${var.environment}-functions"
+  bucket_name = "${var.app_name}-functions-${var.environment}"
   location    = var.location
   storage_class = "STANDARD"
+  force_destroy = true # set to "false" in production
 }
 
 resource "google_service_account" "cloud_run_job_service_account" {
-  account_id   = "${var.project_id}-sa"
+  account_id   = "${var.app_name}-ingest-sa-${var.environment}"
   display_name = "Service Account for Cloud Functions"
 }
 
@@ -117,12 +119,12 @@ resource "google_service_account_iam_member" "cloud_run_job_user" {
 
 module "pubsub" {
   source     = "../../modules/pubsub"
-  topic_name = "${var.project_id}-${var.environment}-${var.topic_name}"
+  topic_name = "${var.app_name}-ingestion-${var.environment}"
 }
 
 resource "google_secret_manager_secret" "secrets" {
   project = var.project_id
-  secret_id = "${var.project_id}-${var.environment}-secrets"
+  secret_id = "${var.app_name}-secrets-${var.environment}"
   replication {
     user_managed {
       replicas {
@@ -142,13 +144,13 @@ resource "google_secret_manager_secret_version" "secrets_version" {
 }
 
 resource "google_parameter_manager_parameter" "default" {
-  parameter_id = "${var.project_id}-${var.environment}-parameter"
+  parameter_id = "${var.app_name}-parameter-${var.environment}"
   format = "JSON"
 }
 
 resource "google_parameter_manager_parameter_version" "default" {
   parameter = google_parameter_manager_parameter.default.name
-  parameter_version_id = "${var.project_id}-${var.environment}-parameter-version-latest"
+  parameter_version_id = "${var.app_name}-parameter-manager-${var.environment}"
   parameter_data = jsonencode({
       "nyc_files": [
       "yellow_tripdata_2025-01.parquet",
@@ -161,18 +163,18 @@ resource "google_parameter_manager_parameter_version" "default" {
 
 resource "google_artifact_registry_repository" "repository" {
   provider = google
-  repository_id = "${var.project_id}-${var.environment}-repository"
+  repository_id = "${var.app_name}-repository-${var.environment}"
   location = var.location
   format = "DOCKER"
 }
 
 locals {
-  docker_image_uri = "${var.location}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.repository.repository_id}/nyc-taxi-ingester-dev:latest"
+  docker_image_uri = "${var.location}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.repository.repository_id}/${var.app_name}-ingester-${var.environment}:latest"
 }
 
 # TODO transform to cloud run + retry policy + monitoring + alerting
 resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
-  name = "${var.project_id}-${var.environment}-ingest-nyc-data-to-gcs-job"
+  name = "${var.app_name}-ingest-nyc-data-to-gcs-job-${var.environment}"
   location = var.location
 
   deletion_protection = false # set to "true" in production check https://docs.cloud.google.com/run/docs/create-jobs?hl=fr#terraform
@@ -208,6 +210,10 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
             }
           }
         }
+        env {
+          name = "PARAMETER_NAME"
+          value = google_parameter_manager_parameter_version.default.name
+        }
       }
     }
   }
@@ -224,7 +230,7 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
 }
 
 resource "google_bigquery_dataset" "raw_dataset" {
-  dataset_id = "nyc_taxi_raw_${var.environment}"
+  dataset_id = "${var.app_name}_raw_${var.environment}"
   location   = var.location
 }
 
@@ -241,7 +247,7 @@ resource "google_bigquery_table" "raw_yellow_tripdata_table" {
   clustering = ["PULocationID", "DOLocationID"]
 
   depends_on = [
-    google_bigquery_dataset.dataset,
+    google_bigquery_dataset.raw_dataset,
   ]
 }
 
@@ -251,6 +257,6 @@ resource "google_bigquery_table" "taxi_zone_lookup_table" {
   schema     = file("${path.module}/schemas/taxi_zone_lookup.json")
 
   depends_on = [
-    google_bigquery_dataset.dataset,
+    google_bigquery_dataset.raw_dataset,
   ]
 }

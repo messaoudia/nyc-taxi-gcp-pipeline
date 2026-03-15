@@ -29,6 +29,7 @@ def run():
     topic_name = os.getenv("TOPIC_NAME")
     nyc_data_secret = os.getenv("NYC_DATA_SECRET")
     environment = os.getenv("ENVIRONMENT")
+    parameter_name = os.getenv("PARAMETER_NAME")
 
     logger.info(
         f"""
@@ -38,6 +39,7 @@ def run():
         BUCKET_NAME: {bucket_name}
         TOPIC_NAME: {topic_name}
         ENVIRONMENT: {environment}
+        PARAMETER_NAME: {parameter_name}
         """
     )
 
@@ -46,8 +48,6 @@ def run():
     nyc_data_uri = json.loads(nyc_data_secret).get("nyc_data_uri")
 
     parameter_manager_client = parametermanager_v1.ParameterManagerClient()
-    parameter_name = f"projects/{project_id}/locations/global/parameters/nyc-taxi-gcp-pipeline-{environment}-parameter/versions/latest"
-
     nyc_files = json.loads(
         parameter_manager_client.render_parameter_version(
             request=parametermanager_v1.RenderParameterVersionRequest(
