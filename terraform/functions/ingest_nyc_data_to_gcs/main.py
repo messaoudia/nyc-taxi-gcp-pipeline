@@ -75,10 +75,11 @@ def run():
 
     complete_nyc_data_uri = f"{nyc_data_uri}{nyc_data_parquet}"
 
-    blob = storage_client.bucket(bucket_name).blob(f"raw/{nyc_data_parquet}")
+    object_name = f"raw/tripdata/{nyc_data_parquet}"
+    blob = storage_client.bucket(bucket_name).blob(object_name)
     if blob.exists():
         logger.info(
-            f"The file raw/{nyc_data_parquet} already exists in the bucket {bucket_name}. Skipping download and upload."
+            f"The file {object_name} already exists in the bucket {bucket_name}. Skipping download and upload."
         )
         return
 
@@ -95,7 +96,7 @@ def run():
     data = json.dumps(
         {
             "bucket": bucket_name,
-            "file_name": f"raw/{nyc_data_parquet}",
+            "file_name": f"raw/tripdata/{nyc_data_parquet}",
         }
     ).encode("utf-8")
 

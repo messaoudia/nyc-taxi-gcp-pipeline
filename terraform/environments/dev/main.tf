@@ -34,7 +34,7 @@ module "gcs_data" {
 }
 
 resource "google_storage_bucket_object" "default" {
- name         = "taxi_zone_lookup.csv"
+ name         = "raw/staticdata/taxi_zone_lookup.csv"
  source       = "${path.module}/../../data/taxi_zone_lookup.csv"
  content_type = "text/csv"
  bucket       = module.gcs_data.bucket.name
@@ -260,3 +260,8 @@ resource "google_bigquery_table" "taxi_zone_lookup_table" {
     google_bigquery_dataset.raw_dataset,
   ]
 }
+
+# resource "google_cloud_run_v2_function" "load_raw_data_to_bigquery" {
+#  name = "${var.app_name}-load-raw-data-to-bigquery-function-${var.environment}"
+#  location = var.location
+#}
