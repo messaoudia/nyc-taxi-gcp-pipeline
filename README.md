@@ -42,6 +42,7 @@ Service accounts are very important for several reasons. One of them is testing 
 <details>
 <summary>auth.sh</summary>
 <br>
+
 ```sh
 # scripts/auth.sh
 
@@ -71,7 +72,5 @@ case $ACTION in
     ;;
 esac
 ```
+
 </details>
-
-
-
