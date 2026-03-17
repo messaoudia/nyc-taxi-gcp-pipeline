@@ -1,7 +1,7 @@
 [
   { "name": "VendorID", "type": "INTEGER", "mode": "NULLABLE" },
-  { "name": "tpep_pickup_datetime", "type": "DATETIME", "mode": "NULLABLE" },
-  { "name": "tpep_dropoff_datetime", "type": "DATETIME", "mode": "NULLABLE" },
+  { "name": "tpep_pickup_datetime", "type": "TIMESTAMP", "mode": "NULLABLE" },
+  { "name": "tpep_dropoff_datetime", "type": "TIMESTAMP", "mode": "NULLABLE" },
   { "name": "passenger_count", "type": "INTEGER", "mode": "NULLABLE" },
   { "name": "trip_distance", "type": "FLOAT", "mode": "NULLABLE" },
   { "name": "RatecodeID", "type": "INTEGER", "mode": "NULLABLE" },
