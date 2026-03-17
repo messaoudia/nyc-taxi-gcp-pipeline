@@ -1,4 +1,2 @@
 functions-framework==3.*
-google-cloud-storage
 google-cloud-bigquery
-polars
