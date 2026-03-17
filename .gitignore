@@ -152,3 +152,4 @@ gcp-key*.json
 
 # Draw.io
 *.bkp
+*.dtmp
