@@ -18,6 +18,25 @@ data "google_project" "project" {}
 
 data "google_storage_project_service_account" "gcs_account" {}
 
+resource "google_project_service" "storage" {
+  service            = "storage.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "iamcredentials" {
+  service            = "iamcredentials.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "cloudrun" {
+  service            = "run.googleapis.com"  # déjà présent ✅
+}
+
+resource "google_project_service" "iam" {
+  service            = "iam.googleapis.com"
+  disable_on_destroy = false
+}
+
 # Enable Cloud Run API
 resource "google_project_service" "run" {
   service            = "run.googleapis.com"
@@ -33,6 +52,12 @@ resource "google_project_service" "eventarc" {
 # Enable Pub/Sub API
 resource "google_project_service" "pubsub" {
   service            = "pubsub.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable Scheduler API
+resource "google_project_service" "scheduler" {
+  service            = "cloudscheduler.googleapis.com"
   disable_on_destroy = false
 }
 
@@ -55,7 +80,7 @@ resource "google_project_service" "artifactregistry" {
 }
 
 # Enable BigQuery API
-resource "google_project_service" "bigquery" {  
+resource "google_project_service" "bigquery" {
   service            = "bigquery.googleapis.com"
   disable_on_destroy = false
 }
@@ -291,6 +316,38 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
     google_artifact_registry_repository.repository,
   ]
 
+}
+
+resource "google_service_account" "scheduler_sa" {
+  account_id   = "${var.app_name}-scheduler-sa-${var.environment}"
+  display_name = "Service Account for Cloud Scheduler"
+}
+
+resource "google_project_iam_member" "scheduler_run_invoker" {
+  project = var.project_id
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.scheduler_sa.email}"
+}
+
+resource "google_cloud_scheduler_job" "ingest_nyc_data" {
+  name     = "${var.app_name}-ingest-scheduler-${var.environment}"
+  schedule = "0 0 1 * *"  # 1er de chaque mois
+  region   = "europe-west3" # europe-west9 not supported by Cloud Scheduler as of now
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://${var.region}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${var.project_id}/jobs/${google_cloud_run_v2_job.ingest_nyc_data_to_gcs.name}:run"
+
+    oauth_token {
+      service_account_email = google_service_account.scheduler_sa.email
+    }
+  }
+
+  depends_on = [
+    google_project_service.scheduler,
+    google_cloud_run_v2_job.ingest_nyc_data_to_gcs,
+    google_project_iam_member.scheduler_run_invoker,
+  ]
 }
 
 resource "google_bigquery_dataset" "raw_dataset" {
