@@ -36,3 +36,35 @@ terraform apply
 cd terraform/dev
 terraform init -backend-config=backend.hcl
 
+# Service Account Impersonate
+Service accounts are very important for several reasons. One of them is testing your flow locally using least privilege conditions by impersonating the service account via gcloud cli, you can test in real conditions with the exact same permissions as production, avoiding any surprises at deployment time.
+```sh
+# scripts/auth.sh
+
+#!/bin/bash
+
+ACTION=$1  # "deploy" ou "local"
+SA=$2      # Service Account email (ex: "nyctaxi-load-bq-sa-dev@nyc-taxi-gcp-pipeline.iam.gserviceaccount.com")
+
+case $ACTION in
+  deploy)
+    echo "🔄 Switching to Owner account for Terraform..."
+    gcloud auth application-default login
+    echo "✅ Ready to terraform apply"
+    ;;
+  local)
+    echo "🔄 Switching to Service Account for local testing..."
+    gcloud auth application-default login \
+      --impersonate-service-account=$SA
+    echo "✅ Ready to test main.py locally"
+    ;;
+  whoami)
+    echo "🔍 Current ADC credentials:"
+    cat ~/.config/gcloud/application_default_credentials.json | grep -E "client_email|service_account_impersonation"
+    ;;
+  *)
+    echo "Usage: ./scripts/auth.sh [deploy|local|whoami]"
+    ;;
+esac
+```
+
