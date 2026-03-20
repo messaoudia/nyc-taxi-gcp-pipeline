@@ -8,17 +8,20 @@ It will demonstrate my skills Data Enginering skills on GCP, Terraform and DBT.
 
 ## Disclaimers
 
-> [!NOTE]  
+> [!NOTE]
 > DISCLAIMER #1: this project is in work in progress 🏗️
 
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > DISCLAIMER #2:
 > - This is NOT Vibe Coding at all !! A good developer keeps control of the code always of course IA was used and should be used to ease productivity but not to just code instead of the developer
 > - This is handwritting code by myself that I can explain 100%
 
 ## Architecture
 ![Architecture Diagram](docs/infrastructure.drawio.png)
+
+## DBT Project
+https://github.com/messaoudia/dbt_nyc_taxi_bigquery
 
 ## Terraform
 ### Init required tf state bucket
