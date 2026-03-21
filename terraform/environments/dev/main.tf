@@ -360,6 +360,10 @@ resource "google_bigquery_table" "raw_yellow_tripdata_table" {
   table_id   = "yellow_tripdata"
   schema     = file("${path.module}/schemas/raw_yellow_tripdata.json")
 
+  labels = {
+    created_by = "dbt"
+  }
+
   time_partitioning {
     type = "DAY"
     field = "tpep_pickup_datetime"
@@ -378,6 +382,10 @@ resource "google_bigquery_table" "taxi_zone_lookup_table" {
   dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
   table_id   = "taxi_zone_lookup"
   schema     = file("${path.module}/schemas/taxi_zone_lookup.json")
+
+  labels = {
+    created_by = "dbt"
+  }
 
   depends_on = [
     google_bigquery_dataset.raw_dataset,
