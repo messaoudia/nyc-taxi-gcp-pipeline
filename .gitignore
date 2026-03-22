@@ -128,6 +128,7 @@ dbt/profiles.yml          # credentials BQ — jamais commiter
 *.key
 *credentials*
 *secret*
+!secrets.tf
 service-account*.json
 gcp-key*.json
 
