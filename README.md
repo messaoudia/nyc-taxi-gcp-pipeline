@@ -20,6 +20,31 @@ It will demonstrate my skills Data Enginering skills on GCP, Terraform and DBT.
 ## Architecture
 ![Architecture Diagram](docs/infrastructure.drawio.png)
 
+### VPC explanation
+For the cloud run job: NAT necessary to connect to outside "public" internet
+For the cloud run service: only allow network internal to GCP no need to access outside on egress
+
+PUBLIC INTERNET
+      │
+      │  ← ingress_settings control this door
+      ▼
+┌─────────────────────────────────────┐
+│         Cloud Function              │
+│                                     │
+│  ingress_settings = ALLOW_ALL       │  ← anyone can call
+│  ingress_settings = ALLOW_INTERNAL  │  ← only internal GCP service
+└─────────────┬───────────────────────┘
+              │
+              │  ← vpc_connector_egress_settings control this door
+              ▼
+┌─────────────────────────────────────┐
+│         VPC Connector               │
+└──────┬──────────────────────────────┘
+       │
+       ├──── PRIVATE_RANGES_ONLY ──→ VPC → GCS / BigQuery (Private IPs)
+       │
+       └──── ALL_TRAFFIC ──────────→ VPC → NAT → Public internet
+
 ## DBT Project
 https://github.com/messaoudia/dbt_nyc_taxi_bigquery
 
