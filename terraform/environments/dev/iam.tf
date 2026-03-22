@@ -96,7 +96,7 @@ resource "google_storage_bucket_iam_member" "gcs_data_access" {
 }
 
 resource "google_project_iam_custom_role" "bq_loader" {
-  role_id = "bqLoader"
+  role_id = "bqLoader_${var.environment}"
   title   = "BQ Loader"
   permissions = [
     "bigquery.tables.create",

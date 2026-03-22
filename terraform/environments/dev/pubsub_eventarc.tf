@@ -5,7 +5,7 @@ module "pubsub" {
 
 # Create an Eventarc trigger, routing Cloud Storage events to Cloud Run
 resource "google_eventarc_trigger" "eventarc_trigger" {
-  name     = "trigger-storage-cloudrun-tf"
+  name     = "trigger-storage-cloudrun-tf-${var.environment}"
   location = google_cloudfunctions2_function.load_raw_data_to_bigquery.location
 
   # Capture objects changed in the bucket
