@@ -21,8 +21,9 @@ It will demonstrate my skills Data Enginering skills on GCP, Terraform and DBT.
 ![Architecture Diagram](docs/infrastructure.drawio.png)
 
 ### VPC explanation
-For the cloud run job: NAT necessary to connect to outside "public" internet (download NYC data)
-For the cloud function: only allow internal GCP network, no need to access outside on egress (PRIVATE_RANGES_ONLY to reach BigQuery)
+- For the cloud run job: uses Direct VPC (network_interfaces) with egress ALL_TRAFFIC — Cloud NAT required to reach the public internet (download NYC data)
+- For the cloud function: only allow internal GCP network so ingress ALLOW_INTERNAL (triggered by Eventarc only) — vpc_connector egress PRIVATE_RANGES_ONLY (BigQuery access, no public internet needed)
+
 
 ```mermaid
 flowchart TD
