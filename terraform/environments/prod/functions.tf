@@ -36,7 +36,7 @@ resource "google_cloudfunctions2_function" "load_raw_data_to_bigquery" {
 
     all_traffic_on_latest_revision = true # newer versions of function v2 will receive all traffic
     # ingress_settings               = "ALLOW_INTERNAL_ONLY"
-    ingress_settings = "ALLOW_ALL" # for dev only
+    ingress_settings = "ALLOW_INTERNAL_ONLY" # for dev only
   }
 
   depends_on = [
