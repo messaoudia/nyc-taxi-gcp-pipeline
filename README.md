@@ -34,7 +34,7 @@ flowchart TD
     CRJ -->|"Cloud NAT"| Internet(["Public Internet"])
     Internet -->|"download NYC data"| CRJ
 
-    CRJ -->|"private ranges"| GCS["Cloud Storage"]
+    CRJ -->|"via VPC"| GCS["Cloud Storage"]
 
     GCS -->|"object.finalized"| EA["Eventarc"] -->|"internal"| CF
 
