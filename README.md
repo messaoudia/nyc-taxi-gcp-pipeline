@@ -9,13 +9,8 @@ It will demonstrate my skills Data Enginering skills on GCP, Terraform and DBT.
 ## Disclaimers
 
 > [!NOTE]
-> DISCLAIMER #1: this project is in work in progress 🏗️
-
-
-> [!IMPORTANT]
-> DISCLAIMER #2:
-> - This is NOT Vibe Coding at all !! A good developer keeps control of the code always of course IA was used and should be used to ease productivity but not to just code instead of the developer
-> - This is handwritting code by myself that I can explain 100%
+> - ℹ️ This project is in work in progress 🏗️
+> - ✍️ Handwritten code — I can explain every technical decision in this codebase.
 
 ## Architecture
 ![Architecture Diagram](docs/infrastructure.drawio.png)
@@ -50,6 +45,16 @@ flowchart TD
 
     NAT -->|"public URL"| Internet(["🌍 Public Internet"])
 ```
+
+## Key Design Decisions
+
+| Decision | Why |
+| --- | --- |
+| Direct VPC on CR Job, VPC Connector on CF | Direct VPC is Google's recommended approach since 2023 (lower latency, no extra billable resource). VPC Connector is the only option available for `google_cloudfunctions2_function` in Terraform. |
+| Eventarc over Pub/Sub polling | Native push trigger on `object.finalized` — no consumer to maintain, built-in retries, zero cost when idle. |
+| BigQuery partition by day + cluster by location | Partition pruning on time-range queries reduces bytes scanned. Clustering cuts scan size further for location-based filters — the two most common patterns on this dataset. |
+| 4 parallel CR Job tasks | One task per source file, each independently idempotent via `CLOUD_RUN_TASK_INDEX`. Static for now, extensible. |
+| 3 distinct service accounts | Limits blast radius: ingest SA can't touch BigQuery, load SA can't trigger jobs. |
 
 ## DBT Project
 https://github.com/messaoudia/dbt_nyc_taxi_bigquery
