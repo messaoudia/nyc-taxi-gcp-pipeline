@@ -1,4 +1,18 @@
 # NYC taxi pipeline from raw data to vizualisation & IA
+![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3.13-3776AB?style=flat&logo=python&logoColor=white)
+![GCP](https://img.shields.io/badge/Google_Cloud-4285F4?style=flat&logo=google-cloud&logoColor=white)
+![BigQuery](https://img.shields.io/badge/BigQuery-669DF6?style=flat&logo=google-bigquery&logoColor=white)
+![Cloud Run](https://img.shields.io/badge/Cloud_Run-4285F4?style=flat&logo=google-cloud&logoColor=white)
+![Cloud Storage](https://img.shields.io/badge/Cloud_Storage-AECBFA?style=flat&logo=google-cloud&logoColor=black)
+![Pub/Sub](https://img.shields.io/badge/Pub%2FSub-4285F4?style=flat&logo=google-cloud&logoColor=white)
+![Eventarc](https://img.shields.io/badge/Eventarc-4285F4?style=flat&logo=google-cloud&logoColor=white)
+![VPC](https://img.shields.io/badge/VPC-34A853?style=flat&logo=google-cloud&logoColor=white)
+![IAM](https://img.shields.io/badge/IAM-EA4335?style=flat&logo=google-cloud&logoColor=white)
+![Artifact Registry](https://img.shields.io/badge/Artifact_Registry-4285F4?style=flat&logo=google-cloud&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)
+![Looker](https://img.shields.io/badge/Looker-4285F4?style=flat&logo=looker&logoColor=white)
+
 ## What is NYC Taxi database ?
 [NYC Taxi & Limousine Comissions](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) is a very popular database for data engineering and data science projects, it contains a lot of interesting data on taxi trips in NYC and it's a great playground to demonstrate data engineering skills on GCP.
 
