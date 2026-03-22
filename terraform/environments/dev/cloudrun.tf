@@ -10,37 +10,44 @@ resource "google_cloud_run_v2_job" "ingest_nyc_data_to_gcs" {
     template {
         service_account = google_service_account.cloud_run_job_service_account.email
         containers {
-        image = local.docker_image_uri
-        env {
-          name = "GOOGLE_CLOUD_PROJECT"
-          value = var.project_id
-        }
-        env {
-          name = "BUCKET_NAME"
-          value = module.gcs_data.bucket.name
-        }
-        env {
-          name = "TOPIC_NAME"
-          value = module.pubsub.topic.name
-        }
-        env {
-          name = "ENVIRONMENT"
-          value = var.environment
-        }
-        env {
-          name = "NYC_DATA_SECRET"
-          value_source {
-            secret_key_ref {
-              secret = google_secret_manager_secret.secrets.secret_id
-              version = "latest"
+          image = local.docker_image_uri
+          env {
+            name = "GOOGLE_CLOUD_PROJECT"
+            value = var.project_id
+          }
+          env {
+            name = "BUCKET_NAME"
+            value = module.gcs_data.bucket.name
+          }
+          env {
+            name = "TOPIC_NAME"
+            value = module.pubsub.topic.name
+          }
+          env {
+            name = "ENVIRONMENT"
+            value = var.environment
+          }
+          env {
+            name = "NYC_DATA_SECRET"
+            value_source {
+              secret_key_ref {
+                secret = google_secret_manager_secret.secrets.secret_id
+                version = "latest"
+              }
             }
           }
+          env {
+            name = "PARAMETER_NAME"
+            value = google_parameter_manager_parameter_version.default.name
+          }
         }
-        env {
-          name = "PARAMETER_NAME"
-          value = google_parameter_manager_parameter_version.default.name
+        vpc_access{
+          network_interfaces {
+            network = google_compute_network.vpc.id
+            subnetwork = google_compute_subnetwork.subnet.id
+          }
+          egress = "ALL_TRAFFIC"
         }
-      }
     }
   }
 
