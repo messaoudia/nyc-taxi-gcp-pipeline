@@ -24,26 +24,36 @@ It will demonstrate my skills Data Enginering skills on GCP, Terraform and DBT.
 For the cloud run job: NAT necessary to connect to outside "public" internet
 For the cloud run service: only allow network internal to GCP no need to access outside on egress
 
-PUBLIC INTERNET
-      │
-      │  ← ingress_settings control this door
-      ▼
-┌─────────────────────────────────────┐
-│         Cloud Function              │
-│                                     │
-│  ingress_settings = ALLOW_ALL       │  ← anyone can call
-│  ingress_settings = ALLOW_INTERNAL  │  ← only internal GCP service
-└─────────────┬───────────────────────┘
-              │
-              │  ← vpc_connector_egress_settings control this door
-              ▼
-┌─────────────────────────────────────┐
-│         VPC Connector               │
-└──────┬──────────────────────────────┘
-       │
-       ├──── PRIVATE_RANGES_ONLY ──→ VPC → GCS / BigQuery (Private IPs)
-       │
-       └──── ALL_TRAFFIC ──────────→ VPC → NAT → Public internet
+```mermaid
+flowchart TD
+    Internet([🌐 Public Internet])
+
+    Internet -->|"ingress_settings"| CF
+    Internet -->|"ingress"| CRS
+
+    CF["☁️ Cloud Function
+    ──────────────────────
+    ALLOW_INTERNAL"]
+
+    CRS["🚀 Cloud Run Service
+    ──────────────────────
+    internal-only"]
+
+    CRJ["🏃 Cloud Run Job
+    ──────────────────────
+    triggered by Cloud Scheduler"]
+
+    CF  -->|"vpc_connector_egress_settings"| VC
+    CRS -->|"vpc_connector_egress_settings"| VC
+    CRJ -->|"vpc_connector_egress_settings"| VC
+
+    VC["🔌 VPC Connector"]
+
+    VC -->|"PRIVATE_RANGES_ONLY"| PRIV["🔒 GCS / BigQuery — private IPs"]
+    VC -->|"ALL_TRAFFIC"| NAT["🔀 Cloud NAT"]
+
+    NAT -->|"public URL"| Internet
+```
 
 ## DBT Project
 https://github.com/messaoudia/dbt_nyc_taxi_bigquery
