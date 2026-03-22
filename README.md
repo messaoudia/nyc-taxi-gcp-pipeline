@@ -64,7 +64,7 @@ terraform plan (done in apply also but to be safe)
 terraform apply
 
 ### Per env apply
-cd terraform/dev
+cd terraform/...
 terraform init -backend-config=backend.hcl
 
 # Service Account Impersonate
