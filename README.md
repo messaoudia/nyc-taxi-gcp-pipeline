@@ -26,23 +26,28 @@ For the cloud function: only allow internal GCP network, no need to access outsi
 
 ```mermaid
 flowchart TD
-    CS["Cloud Scheduler"] -->|"HTTP trigger"| CRJ
+    CF["☁️ Cloud Function
+    ──────────────────────
+    ingress: ALLOW_INTERNAL"]
 
-    CRJ["Cloud Run Job
-    Direct VPC egress: ALL_TRAFFIC"]
+    CRJ["⚙️ Cloud Run Job
+    ──────────────────────
+    triggered by Cloud Scheduler"]
 
-    CRJ -->|"Cloud NAT"| Internet(["Public Internet"])
-    Internet -->|"download NYC data"| CRJ
+    CF -->|"vpc_connector_egress_settings"| VC["🔌 VPC Connector
+    ──────────────────────
+    PRIVATE_RANGES_ONLY"]
 
-    CRJ -->|"via VPC"| GCS["Cloud Storage"]
+    CRJ -->|"vpc_access (network_interfaces)"| VPC["🌐 VPC Network
+    ──────────────────────
+    egress: ALL_TRAFFIC"]
 
-    GCS -->|"object.finalized"| EA["Eventarc"] -->|"internal"| CF
+    VC --> PRIV["🔒 GCS / BigQuery — private IPs"]
 
-    CF["Cloud Function
-    ingress: ALLOW_INTERNAL
-    vpc_connector egress: PRIVATE_RANGES_ONLY"]
+    VPC --> PRIV
+    VPC --> NAT["🔀 Cloud NAT"]
 
-    CF -->|"vpc_connector / private ranges"| BQ["BigQuery"]
+    NAT -->|"public URL"| Internet(["🌍 Public Internet"])
 ```
 
 ## DBT Project
