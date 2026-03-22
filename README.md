@@ -77,14 +77,18 @@ https://github.com/messaoudia/dbt_nyc_taxi_bigquery
 ### Init required tf state bucket
 To be able to use this project you need to first create the tf stated bucket where will be stored tf state per env
 
+```sh
 cd terraform/required
 terraform init
 terraform plan (done in apply also but to be safe)
 terraform apply
+```
 
 ### Per env apply
+```sh
 cd terraform/...
 terraform init -backend-config=backend.hcl
+```
 
 # Service Account Impersonate
 Service accounts are very important for several reasons. One of them is testing your flow locally using least privilege conditions by impersonating the service account via gcloud cli, you can test in real conditions with the exact same permissions as production, avoiding any surprises at deployment time.
