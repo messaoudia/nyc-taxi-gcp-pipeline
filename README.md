@@ -21,38 +21,28 @@ It will demonstrate my skills Data Enginering skills on GCP, Terraform and DBT.
 ![Architecture Diagram](docs/infrastructure.drawio.png)
 
 ### VPC explanation
-For the cloud run job: NAT necessary to connect to outside "public" internet
-For the cloud run service: only allow network internal to GCP no need to access outside on egress
+For the cloud run job: NAT necessary to connect to outside "public" internet (download NYC data)
+For the cloud function: only allow internal GCP network, no need to access outside on egress (PRIVATE_RANGES_ONLY to reach BigQuery)
 
 ```mermaid
 flowchart TD
-    Internet([🌐 Public Internet])
+    CS["Cloud Scheduler"] -->|"HTTP trigger"| CRJ
 
-    Internet -->|"ingress_settings"| CF
-    Internet -->|"ingress"| CRS
+    CRJ["Cloud Run Job
+    Direct VPC egress: ALL_TRAFFIC"]
 
-    CF["☁️ Cloud Function
-    ──────────────────────
-    ALLOW_INTERNAL"]
+    CRJ -->|"Cloud NAT"| Internet(["Public Internet"])
+    Internet -->|"download NYC data"| CRJ
 
-    CRS["🚀 Cloud Run Service
-    ──────────────────────
-    internal-only"]
+    CRJ -->|"private ranges"| GCS["Cloud Storage"]
 
-    CRJ["🏃 Cloud Run Job
-    ──────────────────────
-    triggered by Cloud Scheduler"]
+    GCS -->|"object.finalized"| EA["Eventarc"] -->|"internal"| CF
 
-    CF  -->|"vpc_connector_egress_settings"| VC
-    CRS -->|"vpc_connector_egress_settings"| VC
-    CRJ -->|"vpc_connector_egress_settings"| VC
+    CF["Cloud Function
+    ingress: ALLOW_INTERNAL
+    vpc_connector egress: PRIVATE_RANGES_ONLY"]
 
-    VC["🔌 VPC Connector"]
-
-    VC -->|"PRIVATE_RANGES_ONLY"| PRIV["🔒 GCS / BigQuery — private IPs"]
-    VC -->|"ALL_TRAFFIC"| NAT["🔀 Cloud NAT"]
-
-    NAT -->|"public URL"| Internet
+    CF -->|"vpc_connector / private ranges"| BQ["BigQuery"]
 ```
 
 ## DBT Project
