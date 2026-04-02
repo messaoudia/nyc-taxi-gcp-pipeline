@@ -22,4 +22,6 @@ resource "google_storage_bucket" "bucket" {
       }
     }
   }
+
+  force_destroy = var.force_destroy
 }
