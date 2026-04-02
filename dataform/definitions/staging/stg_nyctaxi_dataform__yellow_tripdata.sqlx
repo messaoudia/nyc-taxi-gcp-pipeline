@@ -1,9 +1,29 @@
 config {
     type: "view",
-    schema: "nyctaxi_staging_dataform_dev",
+    # {app_name}_staging_dataform_{env}
+    schema: `${dataform.projectConfig.vars.app_name}_staging_dataform_${dataform.projectConfig.vars.env}`,
     description: "Staging view for the yellow taxi trip data."
     assertions: {
         nonNull: ["vendor_id", "pickup_ts", "dropoff_ts", "passenger_count", "trip_distance", "fk_rate_code_id", "store_and_fwd_flag", "fk_pickup_location_id", "fk_dropoff_location_id", "payment_type", "fare_amount", "extra", "mta_tax", "tip_amount", "tolls_amount", "improvement_surcharge", "congestion_surcharge", "total_amount"]
+        # check passenge_count > 0
+        custom: [
+            {
+                name: "valid_passenger_count",
+                expression: "passenger_count > 0"
+            },
+            {
+                name: "valid_trip_distance",
+                expression: "trip_distance >= 0"
+            },
+            {
+                name: "valid_fare_amount",
+                expression: "fare_amount >= 0"
+            },
+            {
+                name: "valid_total_amount",
+                expression: "total_amount >= 0"
+            }
+        ]
     },
 }
 

@@ -3,13 +3,28 @@ resource "google_bigquery_dataset" "raw_dataset" {
   location   = var.location
 }
 
+resource "google_bigquery_dataset" "staging_dataset_dataform" {
+  dataset_id = "${var.app_name}_staging_dataform_${var.environment}"
+  location   = var.location
+}
+
+resource "google_bigquery_dataset" "intermediate_dataset_dataform" {
+  dataset_id = "${var.app_name}_intermediate_dataform_${var.environment}"
+  location   = var.location
+}
+
+resource "google_bigquery_dataset" "marts_dataset_dataform" {
+  dataset_id = "${var.app_name}_marts_dataform_${var.environment}"
+  location   = var.location
+}
+
 resource "google_bigquery_table" "raw_yellow_tripdata_table" {
   dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
   table_id   = "yellow_tripdata"
   schema     = file("${path.module}/schemas/raw_yellow_tripdata.json")
 
   labels = {
-    created_by = "dbt"
+    created_by = "terraform"
   }
 
   time_partitioning {
@@ -32,7 +47,7 @@ resource "google_bigquery_table" "taxi_zone_lookup_table" {
   schema     = file("${path.module}/schemas/taxi_zone_lookup.json")
 
   labels = {
-    created_by = "dbt"
+    created_by = "terraform"
   }
 
   depends_on = [

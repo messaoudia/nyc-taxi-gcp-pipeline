@@ -9,7 +9,7 @@ resource "google_bigquery_table" "raw_yellow_tripdata_table" {
   schema     = file("${path.module}/schemas/raw_yellow_tripdata.json")
 
   labels = {
-    created_by = "dbt"
+    created_by = "terraform"
   }
 
   time_partitioning {
@@ -32,7 +32,7 @@ resource "google_bigquery_table" "taxi_zone_lookup_table" {
   schema     = file("${path.module}/schemas/taxi_zone_lookup.json")
 
   labels = {
-    created_by = "dbt"
+    created_by = "terraform"
   }
 
   depends_on = [
