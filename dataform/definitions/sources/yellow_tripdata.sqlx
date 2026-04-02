@@ -1,0 +1,6 @@
+config {
+    type: "declaration",
+    description: "Source table for the yellow taxi trip data."
+    schema: "nyctaxi_raw_dev",
+    name: "stg_nyctaxi_raw__yellow_tripdata",
+}

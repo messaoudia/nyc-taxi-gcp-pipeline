@@ -1,0 +1,3 @@
+defaultProject: nyc-taxi-gcp-pipeline
+defaultLocation: europe-west9
+defaultDataset: nyctaxi_staging_dataform_dev

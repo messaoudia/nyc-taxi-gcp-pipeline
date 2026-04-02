@@ -1,0 +1,8 @@
+# This schema will be created on Terraform
+config {
+  type: "operations",
+  tags: ["init"]
+}
+
+CREATE SCHEMA IF NOT EXISTS `nyc-taxi-gcp-pipeline.nyctaxi_staging_dataform_dev`
+OPTIONS (location = 'europe-west9');
