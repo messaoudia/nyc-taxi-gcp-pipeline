@@ -1,0 +1,34 @@
+config {
+    type: "view",
+    schema: `staging_dataform_${dataform.projectConfig.vars.env}`,
+    description: "Staging view for the taxi zone lookup table",
+    assertions: {
+        nonNull: [
+            "location_id",
+            "district",
+            "zone",
+            "service_zone"
+        ],
+        rowConditions: [
+            "location_id > 0"
+        ]
+    },
+}
+
+-- Columns: LocationID, Borough, Zone, service_zone
+with source as (
+    select * from ${ref("taxi_zone_lookup")}
+),
+
+-- Columns: location_id, district, zone, service_zone
+renamed as (
+    select
+        LocationID as location_id,
+        Borough as district,
+        Zone as zone,
+        service_zone
+
+    from source
+)
+
+select * from renamed
