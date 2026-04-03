@@ -2,7 +2,19 @@ config {
     type: "table",
     schema: `intermediate_dataform_${dataform.projectConfig.vars.env}`,
     description: "Intermediate view for the yellow taxi trip data details joining the raw trip data with the taxi zone lookup and US states reference data",
-    assertions: {},
+    assertions: {
+        nonNull: [
+            "vendor_id",
+            "pickup_ts",
+            "dropoff_ts",
+            "fk_pickup_location_id",
+            "fk_dropoff_location_id",
+        ],
+        rowConditions: [
+            "trip_distance >= 0",
+            "passenger_count >= 0",
+        ]
+    },
 }
 
 with tripdata as (
