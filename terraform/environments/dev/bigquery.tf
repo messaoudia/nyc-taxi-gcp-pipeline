@@ -41,6 +41,8 @@ resource "google_bigquery_table" "raw_yellow_tripdata_table" {
   deletion_protection = false # set to "true" in production
 }
 
+## LOADING TAXI ZONE LOOKUP TABLE
+
 resource "google_bigquery_table" "taxi_zone_lookup_table" {
   dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
   table_id   = "taxi_zone_lookup"
@@ -78,6 +80,90 @@ resource "google_bigquery_job" "load_taxi_zone_lookup" {
 
   depends_on = [
     google_bigquery_table.taxi_zone_lookup_table,
-    google_storage_bucket_object.default,
+    google_storage_bucket_object.static_taxi_zone_lookup,
+  ]
+}
+
+## LOADING US STATES TABLE
+resource "google_bigquery_table" "us_states_table" {
+  dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
+  table_id   = "us_states"
+  schema     = file("${path.module}/schemas/us_states.json")
+
+  labels = {
+    created_by = "terraform"
+  }
+
+  depends_on = [
+    google_bigquery_dataset.raw_dataset,
+  ]
+
+  deletion_protection = false # set to "true" in production
+}
+
+resource "google_bigquery_job" "load_us_states" {
+  job_id = "${var.app_name}-load-us-states-${var.environment}-${formatdate("YYYYMMDDhhmmss", timestamp())}"
+  location = var.location
+
+  load {
+    source_uris = ["gs://${module.gcs_data.bucket.name}/raw/staticdata/us_states.csv"]
+
+    destination_table {
+      project_id = var.project_id
+      dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
+      table_id   = google_bigquery_table.us_states_table.table_id
+    }
+
+    source_format = "CSV"
+    skip_leading_rows = 1
+    autodetect = false
+    write_disposition = "WRITE_TRUNCATE"
+  }
+
+  depends_on = [
+    google_bigquery_table.us_states_table,
+    google_storage_bucket_object.static_us_states,
+  ]
+}
+
+## LOADING LOCATION STATE TABLE
+resource "google_bigquery_table" "location_state_table" {
+  dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
+  table_id   = "location_state"
+  schema     = file("${path.module}/schemas/location_state.json")
+
+  labels = {
+    created_by = "terraform"
+  }
+
+  depends_on = [
+    google_bigquery_dataset.raw_dataset,
+  ]
+
+  deletion_protection = false # set to "true" in production
+}
+
+resource "google_bigquery_job" "load_location_state" {
+  job_id = "${var.app_name}-load-location-state-${var.environment}-${formatdate("YYYYMMDDhhmmss", timestamp())}"
+  location = var.location
+
+  load {
+    source_uris = ["gs://${module.gcs_data.bucket.name}/raw/staticdata/location_state.csv"]
+
+    destination_table {
+      project_id = var.project_id
+      dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
+      table_id   = google_bigquery_table.location_state_table.table_id
+    }
+
+    source_format = "CSV"
+    skip_leading_rows = 1
+    autodetect = false
+    write_disposition = "WRITE_TRUNCATE"
+  }
+
+  depends_on = [
+    google_bigquery_table.location_state_table,
+    google_storage_bucket_object.static_location_state,
   ]
 }

@@ -1,5 +1,5 @@
 [
-  { "name": "LocationID", "type": "INTEGER", "mode": "NULLABLE" },
+  { "name": "LocationID", "type": "INTEGER", "mode": "REQUIRED" },
   { "name": "Borough", "type": "STRING", "mode": "NULLABLE" },
   { "name": "Zone", "type": "STRING", "mode": "NULLABLE" },
   { "name": "service_zone", "type": "STRING", "mode": "NULLABLE" }

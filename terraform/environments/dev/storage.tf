@@ -17,9 +17,23 @@ module "gcs_data" {
   force_destroy = true # set to "false" in production
 }
 
-resource "google_storage_bucket_object" "default" {
+resource "google_storage_bucket_object" "static_taxi_zone_lookup" {
  name         = "raw/staticdata/taxi_zone_lookup.csv"
  source       = "${path.module}/../../data/taxi_zone_lookup.csv"
+ content_type = "text/csv"
+ bucket       = module.gcs_data.bucket.name
+}
+
+resource "google_storage_bucket_object" "static_location_state" {
+ name         = "raw/staticdata/location_state.csv"
+ source       = "${path.module}/../../data/location_state.csv"
+ content_type = "text/csv"
+ bucket       = module.gcs_data.bucket.name
+}
+
+resource "google_storage_bucket_object" "static_us_states" {
+ name         = "raw/staticdata/us_states.csv"
+ source       = "${path.module}/../../data/us_states.csv"
  content_type = "text/csv"
  bucket       = module.gcs_data.bucket.name
 }

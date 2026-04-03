@@ -1,0 +1,52 @@
+state_id,name,abbreviation,capital,region
+1,Alabama,AL,Montgomery,South
+2,Alaska,AK,Juneau,West
+3,Arizona,AZ,Phoenix,West
+4,Arkansas,AR,Little Rock,South
+5,California,CA,Sacramento,West
+6,Colorado,CO,Denver,West
+7,Connecticut,CT,Hartford,Northeast
+8,Delaware,DE,Dover,South
+9,Florida,FL,Tallahassee,South
+10,Georgia,GA,Atlanta,South
+11,Hawaii,HI,Honolulu,West
+12,Idaho,ID,Boise,West
+13,Illinois,IL,Springfield,Midwest
+14,Indiana,IN,Indianapolis,Midwest
+15,Iowa,IA,Des Moines,Midwest
+16,Kansas,KS,Topeka,Midwest
+17,Kentucky,KY,Frankfort,South
+18,Louisiana,LA,Baton Rouge,South
+19,Maine,ME,Augusta,Northeast
+20,Maryland,MD,Annapolis,South
+21,Massachusetts,MA,Boston,Northeast
+22,Michigan,MI,Lansing,Midwest
+23,Minnesota,MN,Saint Paul,Midwest
+24,Mississippi,MS,Jackson,South
+25,Missouri,MO,Jefferson City,Midwest
+26,Montana,MT,Helena,West
+27,Nebraska,NE,Lincoln,Midwest
+28,Nevada,NV,Carson City,West
+29,New Hampshire,NH,Concord,Northeast
+30,New Jersey,NJ,Trenton,Northeast
+31,New Mexico,NM,Santa Fe,West
+32,New York,NY,Albany,Northeast
+33,North Carolina,NC,Raleigh,South
+34,North Dakota,ND,Bismarck,Midwest
+35,Ohio,OH,Columbus,Midwest
+36,Oklahoma,OK,Oklahoma City,South
+37,Oregon,OR,Salem,West
+38,Pennsylvania,PA,Harrisburg,Northeast
+39,Rhode Island,RI,Providence,Northeast
+40,South Carolina,SC,Columbia,South
+41,South Dakota,SD,Pierre,Midwest
+42,Tennessee,TN,Nashville,South
+43,Texas,TX,Austin,South
+44,Utah,UT,Salt Lake City,West
+45,Vermont,VT,Montpelier,Northeast
+46,Virginia,VA,Richmond,South
+47,Washington,WA,Olympia,West
+48,West Virginia,WV,Charleston,South
+49,Wisconsin,WI,Madison,Midwest
+50,Wyoming,WY,Cheyenne,West
+51,District of Columbia,DC,Washington,Northeast

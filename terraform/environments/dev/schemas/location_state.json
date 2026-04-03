@@ -1,0 +1,4 @@
+[
+  { "name": "location_id", "type": "INTEGER", "mode": "REQUIRED" },
+  { "name": "state_id", "type": "INTEGER", "mode": "REQUIRED" }
+]
