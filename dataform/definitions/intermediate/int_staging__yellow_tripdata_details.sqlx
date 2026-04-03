@@ -6,19 +6,19 @@ config {
 }
 
 with tripdata as (
-    select * from { ref("stg_nyctaxi_raw__yellow_tripdata") }
+    select * from ${ ref("stg_nyctaxi_raw__yellow_tripdata") }
 ),
 
 us_states as (
-    select * from { ref("us_states") }
+    select * from ${ ref("us_states") }
 ),
 
 location_state as (
-    select * from { ref("location_state") }
+    select * from ${ ref("location_state") }
 ),
 
 taxi_zone_lookup as (
-    select * from { ref("stg_nyctaxi_raw__taxi_zone_lookup") }
+    select * from ${ ref("stg_nyctaxi_raw__taxi_zone_lookup") }
 ),
 
 location_us_states as (
