@@ -1,6 +1,0 @@
-config {
-    type: "declaration",
-    description: "Source table for the yellow taxi trip data."
-    schema: `${dataform.projectConfig.vars.app_name}_raw_${dataform.projectConfig.vars.env}`,
-    name: "yellow_tripdata",
-}
