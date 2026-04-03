@@ -1,6 +1,6 @@
 config {
     type: "view",
-    schema: `${dataform.projectConfig.vars.app_name}_staging_dataform_${dataform.projectConfig.vars.env}`,
+    schema: `staging_dataform_${dataform.projectConfig.vars.env}`,
     description: "Staging view for the yellow taxi trip data.",
     assertions: {
         nonNull: [

@@ -4,17 +4,17 @@ resource "google_bigquery_dataset" "raw_dataset" {
 }
 
 resource "google_bigquery_dataset" "staging_dataset_dataform" {
-  dataset_id = "${var.app_name}_staging_dataform_${var.environment}"
+  dataset_id = "staging_dataform_${var.environment}"
   location   = var.location
 }
 
 resource "google_bigquery_dataset" "intermediate_dataset_dataform" {
-  dataset_id = "${var.app_name}_intermediate_dataform_${var.environment}"
+  dataset_id = "intermediate_dataform_${var.environment}"
   location   = var.location
 }
 
 resource "google_bigquery_dataset" "marts_dataset_dataform" {
-  dataset_id = "${var.app_name}_marts_dataform_${var.environment}"
+  dataset_id = "marts_dataform_${var.environment}"
   location   = var.location
 }
 
