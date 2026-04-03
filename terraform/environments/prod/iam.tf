@@ -182,3 +182,18 @@ resource "google_project_iam_member" "pubsubpublisher" {
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"
 }
+
+resource "google_service_account" "dataform_sa" {
+  account_id   = "${var.app_name}-dataform-sa-${var.environment}"
+  display_name = "Service Account for Dataform"
+}
+
+resource "google_project_iam_member" "dataform_bq_access" {
+  project = var.project_id
+  role    = "roles/bigquery.dataEditor"
+  member  = "serviceAccount:${google_service_account.dataform_sa.email}"
+
+  depends_on = [
+    google_service_account.dataform_sa,
+  ]
+}
