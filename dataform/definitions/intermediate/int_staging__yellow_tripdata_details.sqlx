@@ -1,0 +1,68 @@
+config {
+    type: "table",
+    schema: `intermediate_dataform_${dataform.projectConfig.vars.env}`,
+    description: "Intermediate view for the yellow taxi trip data details joining the raw trip data with the taxi zone lookup and US states reference data",
+    assertions: {},
+}
+
+with tripdata as (
+    select * from { ref("stg_nyctaxi_raw__yellow_tripdata") }
+),
+
+us_states as (
+    select * from { ref("us_states") }
+),
+
+location_state as (
+    select * from { ref("location_state") }
+),
+
+taxi_zone_lookup as (
+    select * from { ref("stg_nyctaxi_raw__taxi_zone_lookup") }
+),
+
+location_us_states as (
+    select
+        location_state.location_id,
+        location_state.state_id,
+        us_states.name,
+        us_states.region
+
+    from location_state
+
+    left join us_states
+        on location_state.state_id = us_states.state_id
+),
+
+tripdata_details as (
+    select
+        tripdata.*,
+
+        pickup_states.state_id as pickup_state_id,
+        pickup_states.name as pickup_state_name,
+        pickup_states.region as pickup_region,
+        pickup_zone_lookup.district as pickup_district,
+        pickup_zone_lookup.zone as pickup_zone,
+        pickup_zone_lookup.service_zone as pickup_service_zone,
+
+        dropoff_states.state_id as dropoff_state_id,
+        dropoff_states.name as dropoff_state_name,
+        dropoff_states.region as dropoff_region,
+        dropoff_zone_lookup.district as dropoff_district,
+        dropoff_zone_lookup.zone as dropoff_zone,
+        dropoff_zone_lookup.service_zone as dropoff_service_zone,
+
+    from tripdata
+
+    left join location_us_states as pickup_states on
+        tripdata.fk_pickup_location_id = pickup_states.location_id
+    left join location_us_states as dropoff_states on
+        tripdata.fk_dropoff_location_id = dropoff_states.location_id
+    left join taxi_zone_lookup as pickup_zone_lookup on
+        tripdata.fk_pickup_location_id = pickup_zone_lookup.location_id
+    left join taxi_zone_lookup as dropoff_zone_lookup on
+        tripdata.fk_dropoff_location_id = dropoff_zone_lookup.location_id
+
+)
+
+select * from tripdata_details
