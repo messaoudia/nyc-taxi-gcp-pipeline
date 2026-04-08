@@ -49,8 +49,23 @@ variable "impersonation_users" {
     type        = list(string)
 }
 
-variable "github_token" {
-    description = "GitHub PAT token for accessing private repositories"
+variable "repository_url" {
+    description = "URL of the GitHub repository for Dataform"
+    type        = string
+}
+
+variable "repository_default_branch" {
+    description = "Default branch of the GitHub repository for Dataform"
+    type        = string
+}
+
+variable "dataform_default_database" {
+    description = "Default database for Dataform compilation"
+    type        = string
+}
+
+variable "github_pat_token" {
+    description = "GitHub Personal Access Token for Dataform repository access"
     type        = string
     sensitive   = true
 }

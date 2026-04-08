@@ -199,3 +199,14 @@ resource "google_project_iam_member" "dataform_bq_access_job_user" {
   role    = "roles/bigquery.jobUser"
   member  = "serviceAccount:${google_service_account.dataform_sa.email}"
 }
+
+resource "google_secret_manager_secret_iam_member" "dataform_github_token_access" {
+  secret_id = google_secret_manager_secret.github_token.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.dataform_sa.email}"
+
+  depends_on = [
+    google_secret_manager_secret.github_token,
+    google_service_account.dataform_sa,
+  ]
+}
