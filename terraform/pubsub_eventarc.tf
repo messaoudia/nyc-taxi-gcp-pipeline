@@ -1,5 +1,5 @@
 module "pubsub" {
-  source     = "../../modules/pubsub"
+  source     = "./modules/pubsub"
   topic_name = "${var.app_name}-ingestion-${var.environment}"
 }
 

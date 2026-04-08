@@ -1,6 +1,6 @@
 data "archive_file" "functions_zip" {
   type        = "zip"
-  source_dir  = "../../functions/load_raw_data_to_bq"
+  source_dir  = "functions/load_raw_data_to_bq"
   output_path = "/tmp/load_raw_data_to_bq_function.zip"
 }
 

@@ -1,5 +1,5 @@
 module "gcs_data" {
-  source     = "../../modules/gcs"
+  source     = "./modules/gcs"
   bucket_name = "${var.app_name}-${var.bucket_name}-${var.environment}"
   location    = var.location
   storage_class = "STANDARD"
@@ -19,7 +19,7 @@ module "gcs_data" {
 
 resource "google_storage_bucket_object" "static_taxi_zone_lookup" {
  name         = "raw/staticdata/taxi_zone_lookup.csv"
- source       = "${path.module}/../../data/taxi_zone_lookup.csv"
+ source       = "${path.module}/data/taxi_zone_lookup.csv"
  content_type = "text/csv"
  bucket       = module.gcs_data.bucket.name
 }
@@ -33,13 +33,13 @@ resource "google_storage_bucket_object" "static_location_state" {
 
 resource "google_storage_bucket_object" "static_us_states" {
  name         = "raw/staticdata/us_states.csv"
- source       = "${path.module}/../../data/us_states.csv"
+ source       = "${path.module}/data/us_states.csv"
  content_type = "text/csv"
  bucket       = module.gcs_data.bucket.name
 }
 
 module "gcs_functions" {
-  source     = "../../modules/gcs"
+  source     = "./modules/gcs"
   bucket_name = "${var.app_name}-functions-${var.environment}"
   location    = var.location
   storage_class = "STANDARD"
