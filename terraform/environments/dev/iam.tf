@@ -182,3 +182,20 @@ resource "google_project_iam_member" "pubsubpublisher" {
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"
 }
+
+resource "google_service_account" "dataform_sa" {
+  account_id   = "${var.app_name}-dataform-sa-${var.environment}"
+  display_name = "Service Account for Cloud Dataform"
+}
+
+resource "google_project_iam_member" "dataform_bq_access_editor" {
+  project = var.project_id
+  role    = "roles/bigquery.dataEditor"
+  member  = "serviceAccount:${google_service_account.dataform_sa.email}"
+}
+
+resource "google_project_iam_member" "dataform_bq_access_job_user" {
+  project = var.project_id
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${google_service_account.dataform_sa.email}"
+}

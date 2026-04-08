@@ -48,3 +48,9 @@ variable "impersonation_users" {
     description = "List of users that can impersonate the Cloud Run service account"
     type        = list(string)
 }
+
+variable "github_token" {
+    description = "GitHub PAT token for accessing private repositories"
+    type        = string
+    sensitive   = true
+}

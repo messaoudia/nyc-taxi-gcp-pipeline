@@ -10,12 +10,13 @@ resource "google_secret_manager_secret" "secrets" {
   }
 }
 
-# This is not best practice to store non-sensitive data in Secret Manager
+# This is not best practice to store an URI or non-sensitive data in Secret Manager
 # But for the demo purpose, we will store the NYC data URI in Secret Manager to demonstrate how to use secrets in Cloud Run jobs
 resource "google_secret_manager_secret_version" "secrets_version" {
   secret      = google_secret_manager_secret.secrets.name
   secret_data = jsonencode({
-    "nyc_data_uri": var.nyc_data_uri
+    "nyc_data_uri": var.nyc_data_uri,
+    "github_token": var.github_token,
   })
 }
 
