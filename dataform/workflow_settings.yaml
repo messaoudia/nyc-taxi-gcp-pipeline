@@ -1,9 +1,0 @@
-dataformCoreVersion: 3.0.50
-defaultProject: nyc-taxi-gcp-pipeline
-defaultLocation: europe-west9
-defaultDataset: nyctaxi_staging_dataform_dev
-defaultAssertionDataset: dataform_assertions
-vars: {
-  "app_name": "nyctaxi",
-  "env": "dev"
-}

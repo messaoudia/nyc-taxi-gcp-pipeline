@@ -1,6 +1,0 @@
-config {
-    type: "declaration",
-    description: "Source table for the location state.",
-    schema: `${dataform.projectConfig.vars.app_name}_raw_${dataform.projectConfig.vars.env}`,
-    name: "location_state",
-}

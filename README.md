@@ -70,6 +70,9 @@ flowchart TD
 | 4 parallel CR Job tasks | One task per source file, each independently idempotent via `CLOUD_RUN_TASK_INDEX`. Static for now, extensible. |
 | 3 distinct service accounts | Limits blast radius: ingest SA can't touch BigQuery, load SA can't trigger jobs. |
 
+## Dataform project
+https://github.com/messaoudia/dataform_nyc_taxi_bigquery.git
+
 ## DBT Project
 https://github.com/messaoudia/dbt_nyc_taxi_bigquery
 
