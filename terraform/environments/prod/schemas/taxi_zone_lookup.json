@@ -1,6 +1,0 @@
-[
-  { "name": "LocationID", "type": "INTEGER", "mode": "NULLABLE" },
-  { "name": "Borough", "type": "STRING", "mode": "NULLABLE" },
-  { "name": "Zone", "type": "STRING", "mode": "NULLABLE" },
-  { "name": "service_zone", "type": "STRING", "mode": "NULLABLE" }
-]
