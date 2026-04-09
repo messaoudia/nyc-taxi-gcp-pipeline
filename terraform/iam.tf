@@ -220,6 +220,18 @@ resource "google_secret_manager_secret_iam_member" "dataform_github_access" {
   ]
 }
 
+resource "google_secret_manager_secret_iam_member" "dataform_sa_github_access" {
+  project   = var.project_id
+  secret_id = google_secret_manager_secret.github.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.dataform_sa.email}"
+
+  depends_on = [
+    google_secret_manager_secret.github,
+    google_service_account.dataform_sa,
+  ]
+}
+
 # Allow Dataform system SA to impersonate our dataform SA
 resource "google_service_account_iam_member" "dataform_system_sa_token_creator" {
   service_account_id = google_service_account.dataform_sa.name
