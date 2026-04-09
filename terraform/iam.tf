@@ -192,21 +192,47 @@ resource "google_project_iam_member" "dataform_bq_access_editor" {
   project = var.project_id
   role    = "roles/bigquery.dataEditor"
   member  = "serviceAccount:${google_service_account.dataform_sa.email}"
+
+  depends_on = [
+    google_service_account.dataform_sa,
+  ]
 }
 
 resource "google_project_iam_member" "dataform_bq_access_job_user" {
   project = var.project_id
   role    = "roles/bigquery.jobUser"
   member  = "serviceAccount:${google_service_account.dataform_sa.email}"
-}
-
-resource "google_secret_manager_secret_iam_member" "dataform_github_token_access" {
-  secret_id = google_secret_manager_secret.github_token.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.dataform_sa.email}"
 
   depends_on = [
-    google_secret_manager_secret.github_token,
     google_service_account.dataform_sa,
   ]
+}
+
+resource "google_secret_manager_secret_iam_member" "dataform_github_access" {
+  project = var.project_id
+  secret_id = google_secret_manager_secret.github.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
+
+  depends_on = [
+    google_secret_manager_secret.github,
+    google_service_account.dataform_sa,
+  ]
+}
+
+# Allow Dataform system SA to impersonate our dataform SA
+resource "google_service_account_iam_member" "dataform_system_sa_token_creator" {
+  service_account_id = google_service_account.dataform_sa.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
+
+  depends_on = [google_service_account.dataform_sa, google_secret_manager_secret_iam_member.dataform_github_access]
+}
+
+resource "google_service_account_iam_member" "dataform_system_sa_account_user" {
+  service_account_id = google_service_account.dataform_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-dataform.iam.gserviceaccount.com"
+
+  depends_on = [google_service_account.dataform_sa]
 }

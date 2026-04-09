@@ -2,7 +2,11 @@ resource "google_dataform_repository" "repository" {
   provider = google-beta
   project = var.project_id
   region = var.region
-  name = "${var.app_name} Dataform Repository ${var.environment}"
+  name = "${var.app_name}-repository-${var.environment}"
+
+  service_account = google_service_account.dataform_sa.email
+
+  # npmrc_environment_variables_secret_version = google_secret_manager_secret_version.github_secrets_version.id
 
   labels = {
     environment = var.environment
@@ -17,6 +21,10 @@ resource "google_dataform_repository" "repository" {
   workspace_compilation_overrides {
     default_database = var.dataform_default_database
   }
+
+  depends_on = [
+    google_secret_manager_secret_version.github_secrets_version
+  ]
 }
 
 

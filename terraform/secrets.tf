@@ -17,37 +17,26 @@ resource "google_secret_manager_secret_version" "secrets_version" {
   secret_data = jsonencode({
     "nyc_data_uri": var.nyc_data_uri,
   })
+
+  depends_on = [google_secret_manager_secret.secrets]
 }
 
-resource "google_secret_manager_secret" "github_secret" {
-  secret_id = "github-secret-${var.environment}"
-
+resource "google_secret_manager_secret" "github" {
+  project   = var.project_id
+  secret_id = "${var.app_name}-github-${var.environment}"
   replication {
     auto {}
   }
 }
 
 resource "google_secret_manager_secret_version" "github_secrets_version" {
-  secret      = google_secret_manager_secret.github_secret.name
+  secret      = google_secret_manager_secret.github.name
   secret_data = var.github_pat_token
+
+  depends_on = [google_secret_manager_secret.github]
 }
 
-resource "google_secret_manager_secret" "github_token" {
-  project   = var.project_id
-  secret_id = "${var.app_name}-github-token-${var.environment}"
-  replication {
-    user_managed {
-      replicas {
-        location = "europe-west1"
-      }
-    }
-  }
-}
 
-resource "google_secret_manager_secret_version" "github_token_version" {
-  secret      = google_secret_manager_secret.github_token.name
-  secret_data = var.github_token
-}
 
 resource "google_parameter_manager_parameter" "default" {
   parameter_id = "${var.app_name}-parameter-${var.environment}"
