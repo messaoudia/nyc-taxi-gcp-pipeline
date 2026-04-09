@@ -26,7 +26,7 @@ resource "google_storage_bucket_object" "static_taxi_zone_lookup" {
 
 resource "google_storage_bucket_object" "static_location_state" {
  name         = "raw/staticdata/location_state.csv"
- source       = "${path.module}/../../data/location_state.csv"
+ source       = "${path.module}/data/location_state.csv"
  content_type = "text/csv"
  bucket       = module.gcs_data.bucket.name
 }
