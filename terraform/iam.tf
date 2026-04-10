@@ -232,6 +232,23 @@ resource "google_secret_manager_secret_iam_member" "dataform_sa_github_access" {
   ]
 }
 
+resource "google_service_account_iam_member" "dataform_sa_self_token_creator" {
+  service_account_id = google_service_account.dataform_sa.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.dataform_sa.email}"
+
+  depends_on = [google_service_account.dataform_sa]
+}
+
+resource "google_project_iam_member" "dataform_sa_dataform_editor" {
+  project = var.project_id
+  role    = "roles/dataform.editor"
+  member  = "serviceAccount:${google_service_account.dataform_sa.email}"
+
+  depends_on = [google_service_account.dataform_sa]
+}
+
+
 # Allow Dataform system SA to impersonate our dataform SA
 resource "google_service_account_iam_member" "dataform_system_sa_token_creator" {
   service_account_id = google_service_account.dataform_sa.name
